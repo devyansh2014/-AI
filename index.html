@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#5b4bdb">
+<title>पढ़ाईAI — Smart Homework & Exam Companion</title>
+<style>
+:root{--bg:#f5f6ff;--card:#fff;--ink:#20213a;--muted:#6d7088;--primary:#5b4bdb;--soft:#eeecff;--line:#e6e7f2;--green:#16845b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+button,input,textarea,select{font:inherit}button{cursor:pointer;border:0;border-radius:12px;padding:12px 17px;font-weight:700}
+.primary{background:var(--primary);color:#fff}.secondary{background:var(--soft);color:var(--primary)}.ghost{background:#fff;border:1px solid var(--line);color:var(--ink)}
+.wrap{max-width:1120px;margin:auto;padding:22px}.hidden{display:none!important}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px}
+.brand{display:flex;align-items:center;gap:10px;font-size:1.35rem;font-weight:900}.logo{display:grid;place-items:center;width:42px;height:42px;border-radius:14px;background:var(--primary);color:white}
+.panel,.feature,.tool{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 8px 28px #24245a08}
+h1{font-size:clamp(2rem,5vw,3.3rem);line-height:1.1;margin:10px 0}h2{margin:0 0 8px}p{color:var(--muted);margin:7px 0 0}
+.hero{background:linear-gradient(125deg,#28235f,#6657e9);color:#fff;border-radius:26px;padding:30px;margin-bottom:22px}.hero p{color:#e2e0ff;max-width:650px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin:18px 0}.feature .emoji{font-size:1.7rem}.feature h3{margin:8px 0 3px;font-size:1.03rem}.feature p{font-size:.92rem}
+.feature{display:block;width:100%;text-align:left;color:var(--ink);font:inherit;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.feature:hover{transform:translateY(-3px);box-shadow:0 12px 30px #24245a12}
+.feature:focus-visible{outline:3px solid #9b91ff;outline-offset:3px}
+.tool-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0}.tab{background:white;border:1px solid var(--line);color:var(--muted)}.tab.active{background:var(--primary);color:#fff}
+.tool{margin-top:14px}.tool h2{font-size:1.25rem}.field{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;margin:8px 0 14px;color:var(--ink)}
+label{font-weight:700;font-size:.92rem}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:10px}.output{white-space:pre-wrap;background:#f7f7ff;border:1px solid var(--line);border-radius:14px;padding:15px;margin-top:14px;min-height:55px}
+.auth{max-width:440px;margin:7vh auto}.auth .panel{padding:28px}.auth h1{font-size:2rem}
+.small{font-size:.85rem;color:var(--muted)}.credit{text-align:center;padding:28px 10px;color:var(--muted);font-size:.9rem}
+img.preview{max-width:100%;max-height:280px;border-radius:14px;display:block;margin-top:12px}
+.notice{background:#fff7df;border:1px solid #f2df9e;padding:12px;border-radius:12px;color:#72530a;font-size:.9rem;margin-top:12px}
+ul{padding-left:20px;color:var(--muted)}.top-actions{display:flex;gap:8px;align-items:center}
+@media(max-width:760px){.grid{grid-template-columns:1fr 1fr}.wrap{padding:14px}.hero{padding:23px}}
+@media(max-width:480px){.grid{grid-template-columns:1fr}.top-actions button{padding:9px 11px}.brand{font-size:1.12rem}}
+</style>
+</head>
+<body>
+<div id="authScreen" class="wrap auth">
+  <div class="brand" style="justify-content:center;margin-bottom:20px"><span class="logo">प</span> पढ़ाईAI</div>
+  <div class="panel">
+    <h1 id="authTitle">Log in</h1>
+    <p id="authSub">Welcome back! Continue your learning journey.</p>
+    <form id="authForm">
+      <div id="nameWrap" class="hidden"><label for="fullName">Your name</label><input class="field" id="fullName" autocomplete="name" placeholder="Enter your name"></div>
+      <label for="email">Email</label><input class="field" id="email" type="email" required autocomplete="email" placeholder="student@example.com">
+      <label for="password">Password</label><input class="field" id="password" type="password" required minlength="4" autocomplete="current-password" placeholder="Enter password">
+      <button class="primary" id="authSubmit" type="submit" style="width:100%">Log in</button>
+    </form>
+    <p style="text-align:center;margin-top:15px"><span id="switchText">New here?</span> <a href="#" id="switchAuth" style="color:var(--primary);font-weight:800">Create an account</a></p>
+    <p class="small" style="margin-top:18px">Demo account details are stored only in this browser on this device.</p>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+<div class="wrap">
+<header>
+  <div class="brand"><span class="logo">प</span> पढ़ाईAI</div>
+  <div class="top-actions"><span id="welcome" class="small"></span><button class="ghost" id="logoutBtn">Log out</button></div>
+</header>
+<div id="dashboardHome">
+<section class="hero">
+  <div style="font-weight:800;color:#d8d4ff">YOUR SMART HOMEWORK & EXAM COMPANION</div>
+  <h1>Learn smarter.<br>Feel exam-ready.</h1>
+  <p>Get help with homework, revision, notebook catch-up, answer writing and exam planning — in simple English, Hindi or Hinglish.</p>
+  <div class="actions"><button class="secondary" onclick="showTool('photo')">📷 Ask from a photo</button><button class="ghost" onclick="showTool('revision')">Make revision notes</button></div>
+</section>
+<h2>What पढ़ाईAI can help you with</h2>
+<div class="grid">
+ <button type="button" class="feature" data-open-tool="mistakes"><div class="emoji">🔎</div><h3>Mistake Pattern Finder</h3><p>Review past answers, spot repeated mistakes and get improvement tips.</p></button>
+ <button type="button" class="feature" data-open-tool="notebook"><div class="emoji">📒</div><h3>Notebook Completion</h3><p>Check notebook photos for missing work and make a catch-up plan.</p></button>
+ <button type="button" class="feature" data-open-tool="answer"><div class="emoji">✍️</div><h3>Answer-Length Controller</h3><p>Get a suggested word count, number of points and diagram guidance.</p></button>
+ <button type="button" class="feature" data-open-tool="revision"><div class="emoji">📄</div><h3>One-Page Chapter Maker</h3><p>Turn a chapter into compact notes with key points and formulas.</p></button>
+ <button type="button" class="feature" data-open-tool="language"><div class="emoji">🌐</div><h3>Multi-Language Explainer</h3><p>Understand topics in English, Hindi or Hinglish with daily-life examples.</p></button>
+ <button type="button" class="feature" data-open-tool="exam"><div class="emoji">⏱️</div><h3>Last-Day Exam Rescue</h3><p>Create an emergency study plan and focus on important topics.</p></button>
+</div>
+<div class="tabs">
+ <button class="tab active" data-tool="photo">📷 Photo Solver</button>
+ <button class="tab" data-tool="mistakes">Mistake Finder</button>
+ <button class="tab" data-tool="notebook">Notebook Check</button>
+ <button class="tab" data-tool="answer">Answer Length</button>
+ <button class="tab" data-tool="revision">Chapter Notes</button>
+ <button class="tab" data-tool="language">Explain Topic</button>
+ <button class="tab" data-tool="exam">Exam Rescue</button>
+</div>
+</div>
+<section id="photoTool" class="tool hidden">
+ <div class="tool-top"><span class="small">PHOTO SOLVER</span><button class="ghost backBtn" type="button">← Back to dashboard</button></div>
+ <h2>📷 Ask a question using a photo</h2><p>Upload a homework image or open your camera. Add a question if you want.</p>
+ <label for="photoInput">Choose image or take a photo</label>
+ <input class="field" id="photoInput" type="file" accept="image/*" capture="environment">
+ <img id="photoPreview" class="preview hidden" alt="Selected question preview">
+ <label for="photoQuestion">What should I solve? (optional)</label>
+ <textarea id="photoQuestion" class="field" rows="3" placeholder="For example: Solve question 4 and explain step by step."></textarea>
+ <label for="photoLang">Answer language</label><select id="photoLang" class="field"><option>English</option><option>Hindi</option><option>Hinglish</option></select>
+ <div class="actions"><button class="primary" id="photoAsk">Get answer</button><button class="ghost" id="clearPhoto">Clear</button></div>
+ <div id="photoOutput" class="output">Your answer will appear here.</div>
+ <div class="notice">This demo website previews your photo but does not yet send it to a live AI vision service. To get real answers from images, connect a secure AI backend/API. Never put a private API key in this webpage.</div>
+</section>
+<section id="textTool" class="tool hidden">
+ <div class="tool-top"><span class="small">STUDY TOOL</span><button class="ghost backBtn" type="button">← Back to dashboard</button></div>
+ <h2 id="textTitle">Study helper</h2><p id="textDesc"></p>
+ <label for="topicInput">Enter your question, topic or past answer</label><textarea id="topicInput" class="field" rows="5" placeholder="Type or paste your chapter, question, or answer here..."></textarea>
+ <div id="extraFields"></div>
+ <div class="actions"><button class="primary" id="generateBtn">Create help</button><button class="ghost" id="clearText">Clear</button></div>
+ <div id="textOutput" class="output">Your study help will appear here.</div>
+</section>
+<div class="credit">Made with ❤️ · Credits: <b>Devyansh and Ansh of Class VII-D</b><br><span class="small">A learning guide, not a cheating tool — understand the steps and learn with confidence.</span></div>
+</div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+let mode='login', currentUser=null, selectedTool='photo';
+function users(){try{return JSON.parse(localStorage.getItem('padhai_users')||'{}')}catch{return {}}}
+function setMode(m){mode=m;$('authTitle').textContent=m==='login'?'Log in':'Create an account';$('authSub').textContent=m==='login'?'Welcome back! Continue your learning journey.':'Create your student account to get started.';$('authSubmit').textContent=m==='login'?'Log in':'Create account';$('nameWrap').classList.toggle('hidden',m==='login');$('fullName').required=m==='signup';$('switchText').textContent=m==='login'?'New here?':'Already have an account?';$('switchAuth').textContent=m==='login'?'Create an account':'Log in';$('password').autocomplete=m==='login'?'current-password':'new-password'}
+$('switchAuth').onclick=e=>{e.preventDefault();setMode(mode==='login'?'signup':'login')};
+$('authForm').onsubmit=e=>{e.preventDefault();let email=$('email').value.trim().toLowerCase(),pass=$('password').value,u=users();if(mode==='signup'){if(u[email])return alert('An account with this email already exists. Please log in.');u[email]={password:pass,name:$('fullName').value.trim()||'Student'};localStorage.setItem('padhai_users',JSON.stringify(u));login(email,u[email].name)}else{if(!u[email]||u[email].password!==pass)return alert('Email or password is incorrect.');login(email,u[email].name)}};
+function login(email,name){currentUser={email,name};sessionStorage.setItem('padhai_session',JSON.stringify(currentUser));$('authScreen').classList.add('hidden');$('app').classList.remove('hidden');$('welcome').textContent='Hi, '+name}
+function logout(){sessionStorage.removeItem('padhai_session');currentUser=null;$('app').classList.add('hidden');$('authScreen').classList.remove('hidden');$('password').value='';setMode('login')}
+$('logoutBtn').onclick=logout;
+try{let s=JSON.parse(sessionStorage.getItem('padhai_session')||'null');if(s)login(s.email,s.name)}catch{}
+const descriptions={
+ mistakes:['Mistake Pattern Finder','Paste a few of your previous answers. पढ़ाईAI will look for patterns and suggest what to practise.','Compare answers and suggest repeated error patterns, then give 3 practical improvement tips. Do not invent errors that are not visible.'],
+ notebook:['Notebook Completion Assistant','Describe your notebook status or paste a list of completed exercises.','Make a simple catch-up checklist from the details given. Clearly mark anything that needs the student to check in their notebook.'],
+ answer:['Answer-Length Controller','Enter the question and your class/subject for an exam-ready answer.','Suggest a suitable answer length, number of points, and whether a diagram is useful. Then provide a model answer appropriate for a school student.'],
+ revision:['One-Page Chapter Maker','Paste chapter text or enter a chapter name and key material.','Create concise one-page revision notes with headings, key points, definitions and formulas where relevant. Do not claim facts that are not in the supplied text.'],
+ language:['Multi-Language Explainer','Enter a topic and choose how you want it explained.','Explain the topic in the selected language using simple words and a daily-life example.'],
+ exam:['Last-Day Exam Rescue Mode','Enter subject, chapters and how much time is left before the exam.','Create a realistic emergency revision timetable. Prioritise topics the student provides, include short breaks and quick self-tests.']
+};
+function showTool(t){
+ selectedTool=t;
+ $('dashboardHome').classList.add('hidden');
+ $('photoTool').classList.toggle('hidden',t!=='photo');
+ $('textTool').classList.toggle('hidden',t==='photo');
+ document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tool===t));
+ if(t!=='photo'){
+  let d=descriptions[t];
+  $('textTitle').textContent=d[0];
+  $('textDesc').textContent=d[1];
+  $('topicInput').placeholder=t==='mistakes'?'Paste 2–5 previous answers here...':'Type or paste here...';
+  $('extraFields').innerHTML=t==='language'?'<label for="languageChoice">Language</label><select id="languageChoice" class="field"><option>English</option><option>Hindi</option><option>Hinglish</option></select>':t==='answer'?'<label for="classChoice">Class / grade</label><input id="classChoice" class="field" placeholder="e.g. Class VII">':t==='exam'?'<label for="timeChoice">Time left</label><input id="timeChoice" class="field" placeholder="e.g. 1 day / 3 hours">':'';
+  $('textOutput').textContent='Your study help will appear here.';
+ }
+}
+function backToDashboard(){
+ $('photoTool').classList.add('hidden');
+ $('textTool').classList.add('hidden');
+ $('dashboardHome').classList.remove('hidden');
+}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>showTool(b.dataset.tool));
+document.querySelectorAll('[data-open-tool]').forEach(b=>b.onclick=()=>showTool(b.dataset.openTool));
+document.querySelectorAll('.backBtn').forEach(b=>b.onclick=backToDashboard);
+window.showTool=showTool;
+$('photoInput').onchange=()=>{let f=$('photoInput').files[0];if(!f)return;let url=URL.createObjectURL(f);$('photoPreview').src=url;$('photoPreview').classList.remove('hidden');$('photoOutput').textContent='Image selected: '+f.name};
+$('clearPhoto').onclick=()=>{$('photoInput').value='';$('photoPreview').classList.add('hidden');$('photoPreview').removeAttribute('src');$('photoQuestion').value='';$('photoOutput').textContent='Your answer will appear here.'};
+$('photoAsk').onclick=()=>{if(!$('photoInput').files.length)return alert('Please upload or take a photo first.');$('photoOutput').textContent='Your image is ready. To generate the actual answer, this page needs a secure AI vision backend. Your note: '+($('photoQuestion').value||'No extra instructions')+'. Preferred language: '+$('photoLang').value+'.'};
+$('clearText').onclick=()=>{$('topicInput').value='';$('textOutput').textContent='Your study help will appear here.'};
+$('generateBtn').onclick=()=>{let input=$('topicInput').value.trim();if(!input)return alert('Please enter a topic or question.');let instruction=descriptions[selectedTool][2],extra='';if(selectedTool==='language')extra=' Explain in '+$('languageChoice').value+'.';if(selectedTool==='answer')extra=' Student level: '+($('classChoice').value||'school')+'.';if(selectedTool==='exam')extra=' Time remaining: '+($('timeChoice').value||'not specified')+'.';$('textOutput').textContent='Study request prepared:\n\n'+instruction+extra+'\n\nYour content:\n'+input+'\n\nTo generate a real AI response, connect this website to a secure AI backend. This offline demo does not make AI/API calls.'};
+</script>
+</body>
+</html>
